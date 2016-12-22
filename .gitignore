@@ -1,0 +1,11 @@
+.xlsx
+.csv
+.txt
+.log
+.project
+.pydevproject
+**/*.xlsx
+**/*.csv
+**/*.pyc
+**/*.log
+**/*.txt
