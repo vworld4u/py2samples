@@ -11,17 +11,19 @@ import multiprocessing
 import logging
 import time
 
-def list_append(count, id, out_list):
+def list_append(count, idAttr, out_list):
     """
     Creates an empty list and then appends a 
     random number to the list 'count' number
     of times. A CPU-heavy operation!
     """
     logger = logging.getLogger("abc")
-    logger.info("listappend: id = " + str(id))
+    logger.info("listappend: id = " + str(idAttr))
     for i in range(count):
         out_list.append(random.random())
-        logger.info("listappend(" + str(id) + ") Index: " + str(i) + ": Appending:" + str(out_list[-1]))
+        logger.info("listappend(" + str(idAttr) + ") Index: " + str(i) + ": Appending:" + str(out_list[-1]))
+        if (out_list[-1] < 0 or out_list[-1] > 0.7):
+            logger.error("Number entered is " + str(out_list[-1]) + " is either negative or greater in range")
 
 def main():
     print "MultiProcess Demo"
@@ -37,7 +39,7 @@ def main():
     handler.setLevel(logging.DEBUG)
     logger.addHandler(handler)
     logger.setLevel(logging.DEBUG)
-    consolehandler = logging.StreamHandler()
+    consolehandler = InfoConsoleHandler()
     consolehandler.setLevel(logging.DEBUG)
     logger.addHandler(consolehandler)
     jobs = []
@@ -60,5 +62,19 @@ def main():
 
     logger.info("doneProcess: " + str(time.time()))
     print "List processing complete."
+
+
+# The below code creates a Console Handler which streams only messages of INFO level and nothing else.
+
+from logging import StreamHandler, INFO
+
+class InfoConsoleHandler(StreamHandler):
+    def __init__(self, stream = None):
+        StreamHandler.__init__(self, stream)
+
+    def emit(self, record):
+        if not record.levelno == INFO:
+            return
+        StreamHandler.emit(self, record)
 
 if __name__ == '__main__': main()
